@@ -174,6 +174,30 @@ showOrderConfirmation.value = true
       ${{ (selectedPackage / 100).toFixed(2) }}
     </strong>
 
+<div class="payment-selection">
+  <h3>Choose Your Payment Method</h3>
+
+  <button
+    :class="{ selected: selectedPayment === 'ABA Bank' }"
+    @click="selectedPayment = 'ABA Bank'"
+  >
+    🏦 ABA Bank
+  </button>
+
+  <button
+    :class="{ selected: selectedPayment === 'KHQR' }"
+    @click="selectedPayment = 'KHQR'"
+  >
+    📱 KHQR
+  </button>
+
+  <div v-if="selectedPayment" class="payment-selected">
+    <p>Selected Payment Method</p>
+    <strong>{{ selectedPayment }}</strong>
+    <p>Payment instructions coming soon.</p>
+  </div>
+</div>
+
     <button @click="showOrderConfirmation = false">
       Back to Packages
     </button>
@@ -391,6 +415,40 @@ footer { padding: 30px; text-align: center; border-top: 1px solid #292747; }
   background: #45351b;
   color: #ffd166;
   font-weight: bold;
+}
+
+.payment-selection {
+  margin-top: 25px;
+  padding: 20px;
+  border: 1px solid #8750c7;
+  border-radius: 16px;
+  background: #0c102a;
+}
+
+.payment-selection h3 {
+  color: white;
+}
+
+.payment-selection button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 12px;
+  border: 1px solid #8750c7;
+  border-radius: 12px;
+  background: #17152e;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.payment-selection button.selected {
+  border: 2px solid #a15cff;
+  background: #30204f;
+}
+
+.payment-selected {
+  margin-top: 18px;
+  color: #65dfff;
 }
 
 </style>
