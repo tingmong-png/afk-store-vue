@@ -11,6 +11,8 @@ const showOrderConfirmation = ref(false)
 const orderId = ref('')
 const orderStatus = ref('Pending Payment')
 const selectedPayment = ref('')
+const savingOrder = ref(false)
+const orderError = ref('')
 async function searchAccount() {
   const name = username.value.trim().replace(/^@/, '')
   error.value = ''
@@ -42,7 +44,8 @@ async function searchAccount() {
     loading.value = false
   }
 }
-function continueToOrder() {
+
+async function continueToOrder() {
   if (!account.value) {
     alert('Please search your Roblox account first.')
     return
@@ -53,11 +56,46 @@ function continueToOrder() {
     return
   }
 
-  orderId.value = 'AFK-' + Date.now()
-orderStatus.value = 'Pending Payment'
-selectedPayment.value = ''
-showOrderConfirmation.value = true
+  savingOrder.value = true
+  orderError.value = ''
+
+  const newOrderCode = 'AFK-' + Date.now()
+
+  try {
+    const response = await fetch(
+      '/.netlify/functions/create-order',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          orderCode: newOrderCode,
+          robloxUsername: account.value.username,
+          robloxUserId: String(account.value.id),
+          displayName: account.value.displayName,
+          packageRobux: selectedPackage.value,
+        }),
+      }
+    )
+
+    const data = await response.json()
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || 'Unable to create order.')
+    }
+
+    orderId.value = data.order.order_code
+    orderStatus.value = data.order.status
+    selectedPayment.value = ''
+    showOrderConfirmation.value = true
+  } catch (err) {
+    orderError.value = err.message || 'Unable to create order.'
+  } finally {
+    savingOrder.value = false
+  }
 }
+
 </script>
 
 <template>
@@ -146,7 +184,12 @@ showOrderConfirmation.value = true
   <h3>Selected Package</h3>
   <p>{{ selectedPackage.toLocaleString() }} Robux</p>
   <strong>${{ (selectedPackage / 100).toFixed(2) }}</strong>
-  <button @click="continueToOrder">Continue</button>
+  <button
+  @click="continueToOrder"
+  :disabled="savingOrder"
+>
+  {{ savingOrder ? 'Creating Order...' : 'Continue' }}
+</button>
 </div>
       </section>
 
