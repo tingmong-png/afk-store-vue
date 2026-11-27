@@ -6,7 +6,7 @@ const username = ref('')
 const loading = ref(false)
 const error = ref('')
 const account = ref(null)
-
+const selectedPackage = ref(null)
 async function searchAccount() {
   const name = username.value.trim().replace(/^@/, '')
   error.value = ''
@@ -24,7 +24,7 @@ async function searchAccount() {
   '/.netlify/functions/roblox-lookup',
   {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
       body: JSON.stringify({ username: name })
     })
 
@@ -37,6 +37,19 @@ async function searchAccount() {
   } finally {
     loading.value = false
   }
+}
+function continueToOrder() {
+  if (!account.value) {
+    alert('Please search your Roblox account first.')
+    return
+  }
+
+  alert(
+    `Order Preview
+Roblox: ${account.value.username}
+Package: ${selectedPackage.value} Robux
+Price: $${(selectedPackage.value / 100).toFixed(2)}`
+  )
 }
 </script>
 
@@ -103,28 +116,31 @@ async function searchAccount() {
 
           <p v-if="error" class="error">{{ error }}</p>
 
-          <div v-if="account" class="account-result">
-            <img :src="account.avatarUrl" alt="Roblox avatar" />
-            <div>
-              <strong>{{ account.displayName }}</strong>
-              <p>@{{ account.username }}</p>
-              <small>ID: {{ account.id }}</small>
-            </div>
-            <span class="check">✓</span>
-          </div>
         </div>
       </section>
 
       <section id="packages" class="section">
         <h2>Choose Your Robux Package</h2>
         <div class="packages">
-          <div v-for="item in [50, 100, 200, 300, 400, 500]" :key="item" class="package">
+          <div
+  v-for="item in [50, 100, 200, 300, 400, 500, 1000]"
+  :key="item"
+  class="package"
+  :class="{ selected: selectedPackage === item }"
+  @click="selectedPackage = item"
+>
             <span class="coin">R$</span>
             <h3>{{ item }} Robux</h3>
             <p>${{ (item / 100).toFixed(2) }}</p>
             <small>Available preview</small>
           </div>
         </div>
+        <div v-if="selectedPackage" class="selected-package">
+  <h3>Selected Package</h3>
+  <p>{{ selectedPackage.toLocaleString() }} Robux</p>
+  <strong>${{ (selectedPackage / 100).toFixed(2) }}</strong>
+  <button @click="continueToOrder">Continue</button>
+</div>
       </section>
 
       <section id="payment" class="section">
@@ -229,5 +245,87 @@ footer { padding: 30px; text-align: center; border-top: 1px solid #292747; }
 @media (max-width: 450px) {
   .packages { grid-template-columns: 1fr; }
   .search-card, .player-card { padding: 22px; }
+}
+
+/* AFK Store heading color improvements */
+.hero-left h1 {
+  color: #ffffff;
+}
+
+.search-card h2,
+.section h2,
+.default-player h2 {
+  color: #ffffff;
+}
+
+/* AFK PLAYER spacing improvement */
+.default-player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.player-icon {
+  font-size: 75px;
+  line-height: 1;
+}
+
+.default-player h2 {
+  margin: 0;
+}
+
+.default-player p {
+  margin: 0;
+}
+.package {
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.package:hover {
+  transform: translateY(-4px);
+}
+
+.package.selected {
+  border: 2px solid #a15cff;
+  box-shadow: 0 0 20px #a15cff66;
+  background: #21183e;
+}
+
+.selected-package {
+  margin-top: 25px;
+  padding: 25px;
+  text-align: center;
+  border: 1px solid #8750c7;
+  border-radius: 20px;
+  background: #17152e;
+}
+
+.selected-package h3 {
+  color: white;
+}
+
+.selected-package p {
+  color: #65dfff;
+  font-size: 22px;
+}
+
+.selected-package strong {
+  color: #ff72d9;
+  font-size: 24px;
+}
+
+.selected-package button {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 15px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #6535ff, #d522d0);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
 }
 </style>
