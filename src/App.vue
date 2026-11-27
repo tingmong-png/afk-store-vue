@@ -7,6 +7,7 @@ const loading = ref(false)
 const error = ref('')
 const account = ref(null)
 const selectedPackage = ref(null)
+const showOrderConfirmation = ref(false)
 async function searchAccount() {
   const name = username.value.trim().replace(/^@/, '')
   error.value = ''
@@ -44,12 +45,12 @@ function continueToOrder() {
     return
   }
 
-  alert(
-    `Order Preview
-Roblox: ${account.value.username}
-Package: ${selectedPackage.value} Robux
-Price: $${(selectedPackage.value / 100).toFixed(2)}`
-  )
+  if (!selectedPackage.value) {
+    alert('Please select a Robux package.')
+    return
+  }
+
+  showOrderConfirmation.value = true
 }
 </script>
 
@@ -142,7 +143,27 @@ Price: $${(selectedPackage.value / 100).toFixed(2)}`
   <button @click="continueToOrder">Continue</button>
 </div>
       </section>
+<section v-if="showOrderConfirmation" class="section">
+  <div class="selected-package">
+    <h2>Confirm Your Order</h2>
 
+    <div class="player-profile">
+      <img :src="account.avatarUrl" alt="Roblox Avatar" />
+      <h2>{{ account.displayName }}</h2>
+      <p>@{{ account.username }}</p>
+    </div>
+
+    <h3>Order Summary</h3>
+    <p>{{ selectedPackage }} Robux</p>
+    <strong>
+      ${{ (selectedPackage / 100).toFixed(2) }}
+    </strong>
+
+    <button @click="showOrderConfirmation = false">
+      Back to Packages
+    </button>
+  </div>
+</section>
       <section id="payment" class="section">
         <h2>Payment Options</h2>
         <p>ABA Bank and KHQR payment setup coming soon.</p>
