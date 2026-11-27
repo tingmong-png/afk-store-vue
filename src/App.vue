@@ -21,7 +21,7 @@ async function searchAccount() {
 
   try {
     const response = await fetch(
-  'https://afk-store-8udv.netlify.app/.netlify/functions/roblox-lookup',
+  '/.netlify/functions/roblox-lookup',
   {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
