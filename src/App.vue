@@ -8,6 +8,9 @@ const error = ref('')
 const account = ref(null)
 const selectedPackage = ref(null)
 const showOrderConfirmation = ref(false)
+const orderId = ref('')
+const orderStatus = ref('Pending Payment')
+const selectedPayment = ref('')
 async function searchAccount() {
   const name = username.value.trim().replace(/^@/, '')
   error.value = ''
@@ -50,7 +53,10 @@ function continueToOrder() {
     return
   }
 
-  showOrderConfirmation.value = true
+  orderId.value = 'AFK-' + Date.now()
+orderStatus.value = 'Pending Payment'
+selectedPayment.value = ''
+showOrderConfirmation.value = true
 }
 </script>
 
@@ -143,6 +149,7 @@ function continueToOrder() {
   <button @click="continueToOrder">Continue</button>
 </div>
       </section>
+
 <section v-if="showOrderConfirmation" class="section">
   <div class="selected-package">
     <h2>Confirm Your Order</h2>
@@ -151,6 +158,14 @@ function continueToOrder() {
       <img :src="account.avatarUrl" alt="Roblox Avatar" />
       <h2>{{ account.displayName }}</h2>
       <p>@{{ account.username }}</p>
+    </div>
+
+    <div class="order-details">
+      <p>Order ID</p>
+      <strong>{{ orderId }}</strong>
+
+      <p>Order Status</p>
+      <span class="order-status">{{ orderStatus }}</span>
     </div>
 
     <h3>Order Summary</h3>
@@ -349,4 +364,33 @@ footer { padding: 30px; text-align: center; border-top: 1px solid #292747; }
   font-weight: bold;
   cursor: pointer;
 }
+
+.order-details {
+  margin: 20px 0;
+  padding: 18px;
+  border: 1px solid #8750c7;
+  border-radius: 16px;
+  background: #0c102a;
+  text-align: left;
+}
+
+.order-details p {
+  color: #aaaed1;
+  margin: 8px 0;
+}
+
+.order-details strong {
+  color: #65dfff;
+  word-break: break-all;
+}
+
+.order-status {
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 20px;
+  background: #45351b;
+  color: #ffd166;
+  font-weight: bold;
+}
+
 </style>
