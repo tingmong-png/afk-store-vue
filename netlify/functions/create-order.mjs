@@ -1,4 +1,4 @@
-
+// AFK Store - Supabase URL configuration refresh
 export default async (req) => {
     const headers = {
       'Content-Type': 'application/json',
