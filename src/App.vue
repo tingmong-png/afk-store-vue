@@ -184,12 +184,9 @@ showOrderConfirmation.value = true
     🏦 ABA Bank
   </button>
 
-  <button
-    :class="{ selected: selectedPayment === 'KHQR' }"
-    @click="selectedPayment = 'KHQR'"
-  >
-    📱 KHQR
-  </button>
+  <button disabled class="coming-soon">
+  📱 KHQR — Coming Soon
+</button>
 
   <div v-if="selectedPayment" class="payment-selected">
     <p>Selected Payment Method</p>
