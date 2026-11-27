@@ -1,12 +1,29 @@
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Content-Type': 'application/json',
+};
+
 export default async (req) => {
-  if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405,
+  if (req.method === 'OPTIONS') {
+    return new Response(null, {
+      status: 204,
+      headers: corsHeaders,
     });
+  }
+
+  if (req.method !== 'POST') {
+    return new Response(
+      JSON.stringify({ error: 'Method not allowed' }),
+      { status: 405, headers: corsHeaders }
+    );
   }
 
   try {
     const { username } = await req.json();
+
     const cleanUsername = String(username || '')
       .trim()
       .replace(/^@/, '');
@@ -14,7 +31,7 @@ export default async (req) => {
     if (!cleanUsername) {
       return new Response(
         JSON.stringify({ error: 'Please enter a username.' }),
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       );
     }
 
@@ -40,7 +57,7 @@ export default async (req) => {
     if (!user) {
       return new Response(
         JSON.stringify({ error: 'Roblox account not found.' }),
-        { status: 404 }
+        { status: 404, headers: corsHeaders }
       );
     }
 
@@ -62,15 +79,12 @@ export default async (req) => {
         displayName: user.displayName,
         avatarUrl,
       }),
-      {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      }
+      { status: 200, headers: corsHeaders }
     );
   } catch (error) {
     return new Response(
       JSON.stringify({ error: error.message || 'Lookup failed.' }),
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 };

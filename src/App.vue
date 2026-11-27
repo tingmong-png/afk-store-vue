@@ -20,7 +20,9 @@ async function searchAccount() {
   loading.value = true
 
   try {
-    const response = await fetch('/.netlify/functions/roblox-lookup', {
+    const response = await fetch(
+  'https://afk-store-8udv.netlify.app/.netlify/functions/roblox-lookup',
+  {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: name })
@@ -162,9 +164,44 @@ nav a { color: #dddaf2; text-decoration: none; font-weight: bold; }
 .level-tag { bottom: 15px; right: 18px; color: #ff72d9; }
 .default-player, .player-profile { text-align: center; }
 .player-icon { font-size: 75px; }
-.player-profile img { width: 115px; height: 115px; border-radius: 22px; object-fit: cover; }
-.player-profile h2 { margin: 12px 0 5px; }
-.player-profile p, .player-profile small { color: #bfc5e8; }
+.player-profile {
+  width: 100%;
+  text-align: center;
+  padding: 35px 0 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.player-profile img {
+  width: 115px;
+  height: 115px;
+  border-radius: 22px;
+  object-fit: cover;
+  border: 2px solid #8750c7;
+  box-shadow: 0 8px 25px #00000055;
+}
+
+.player-profile h2 {
+  color: #ffffff;
+  font-size: 24px;
+  margin: 14px 0 6px;
+}
+
+.player-profile p {
+  color: #65dfff;
+  margin: 5px 0;
+}
+
+.player-profile small {
+  display: block;
+  color: #bfc5e8;
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.level-tag {
+  z-index: 2;
+}
 .search-card h2 { font-size: 28px; }
 .search-card input { width: 100%; padding: 19px; border: 1px solid #9a55e7; border-radius: 16px; background: #0c102a; color: white; font-size: 17px; margin: 12px 0; }
 .search-card button { width: 100%; padding: 18px; border: 0; border-radius: 16px; background: linear-gradient(90deg, #6535ff, #d522d0); color: white; font-size: 18px; font-weight: bold; cursor: pointer; }
